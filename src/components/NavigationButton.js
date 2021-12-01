@@ -1,18 +1,24 @@
-import React from "react";
-import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import React from 'react';
+import { 
+    TouchableOpacity, 
+    Text, 
+    StyleSheet, 
+    View 
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const NavButton= (props) =>{
+const NavButton= (props) => {
     return(
         <TouchableOpacity style={styles.button} onPress={props.onPress}>
             <View style={styles.leftButtonView}>
                 <Icon name={props.name} size={35} color="maroon"/>
                 <Text style={styles.buttonText} >{props.navigationName}</Text>
             </View>
-                <Icon name="arrow-forward" size={35} color="maroon"/>
+            <Icon name="arrow-forward" size={35} color="maroon"/>
         </TouchableOpacity>
-    )
-}
+    );
+};
+
 const styles= StyleSheet.create({
     button:{
         flexDirection:"row",

@@ -1,15 +1,21 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Text, KeyboardAvoidingView, ScrollView, ToastAndroid } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from 'react';
+import { 
+    View, 
+    StyleSheet, 
+    Text, 
+    KeyboardAvoidingView, 
+    ScrollView, 
+    ToastAndroid 
+} from 'react-native';
 import ButtonField from '../../components/Button';
 import InputTextField from '../../components/TextField';
 import { OtpValidator, PasswordValidator, ConfirmPasswordValidator } from '../../components/validation';
 import axios from 'axios';
 import { Loading } from '../../components/Loder';
 import HeaderScreen from '../../components/Header';
+import { BASE_URL } from '../../config';
 
- 
-const SetPassword = ({navigation}) =>{
+const SetPassword = ({navigation}) => {
     const [otp, setOtp] = useState('');
     const [otpErr, setOtpErr] = useState(null);
     const [password, setPassword] = useState('');
@@ -21,12 +27,12 @@ const SetPassword = ({navigation}) =>{
     const [loading, setLoading] = useState(false);
 
 
-    const resetPassword = () =>{
+    const resetPassword = () => {
         if(otp.length === 0 || password.length === 0 || confirmPassword.length === 0){
             // alert("Please enter the detail in Text Field!!")
             ToastAndroid.showWithGravityAndOffset("Please enter the detail in Text Field!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         }
-         else if(otpErr != null || passwordErr != null || confirmPasswordErr != null){
+        else if(otpErr != null || passwordErr != null || confirmPasswordErr != null){
             // alert("Please enter the details correctly")
             ToastAndroid.showWithGravityAndOffset("Please enter the details correctly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         } 
@@ -36,34 +42,35 @@ const SetPassword = ({navigation}) =>{
         }
     }
 
-    const reset = async() =>{
+    const reset = async() => {
         var config = {
             method: "post",
-            url: "https://nameless-savannah-21991.herokuapp.com/recoverPassword",
+            url: `${BASE_URL}/recoverPassword`,
             headers: {
               "Content-Type": "application/json",
             },
             data:{'verificationCode':otp,'password':password},
         };
         await axios(config)
-            .then(response => {
-                setLoading(false);
-                if (response.status==200){
+        .then(response => {
+            setLoading(false);
+            if (response.status==200){
                 // alert("You have successfully reset your Password!!")
                 ToastAndroid.showWithGravityAndOffset("You have successfully changed your Password!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
                 console.log(response.data)
                 navigation.navigate('Login')  
-                } 
-            })
-            .catch(function(error) {
-                setLoading(false);
-                console.log(error);
-                // alert("There might be network issue or enter the credentials properly")
-                ToastAndroid.showWithGravityAndOffset("There might be network issue or enter the credentials properly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-            })
+            } 
+        })
+        .catch(function(error) {
+            setLoading(false);
+            console.log(error);
+            // alert("There might be network issue or enter the credentials properly")
+            ToastAndroid.showWithGravityAndOffset("There might be network issue or enter the credentials properly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        })
     }
+
     return(
-        <View style={{flex:1}}>
+        <View style={styles.container}>
             <HeaderScreen header="Reset Password" onPress={() => navigation.navigate('ForgotPassword')}/>
             <KeyboardAvoidingView
                 style={styles.loginContainer}
@@ -126,50 +133,46 @@ const SetPassword = ({navigation}) =>{
                 <Loading loading={loading}/>
             </KeyboardAvoidingView>
         </View>
-    )
-}
-
-
-
-
+    );
+};
 
 const styles= StyleSheet.create({
+    container:{
+        flex:1
+    },
     loginContainer: {
         flex: 1,
         justifyContent: 'center',
         padding: 20,
         backgroundColor:"#f0f0f0"
-      },
-      scrollViewConatiner:{
+    },
+    scrollViewConatiner:{
         flexGrow: 1, 
         justifyContent: 'center'
-      },
-      goBackIcon:{
-        position:"relative",
-        top:-60
-      },
-      headingText: {
+    },
+    headingText: {
         color:"maroon",
         alignSelf: 'center',
         fontSize: 50,
         marginBottom: 10,
         fontWeight: 'bold',
-      },
-      subHeadingText:{
+    },
+    subHeadingText:{
         alignSelf:"center",
+        textAlign:"center",
         marginBottom:40,
         fontSize:18,
         color:"black",
         fontWeight:"bold"
-      },
-      touchableTextButton:{
+    },
+    touchableTextButton:{
         alignItems:"center",
         marginTop:20
-      },
-      touchableText:{
+    },
+    touchableText:{
         color:"black",
         fontSize:18
-      },
+    },
 });
 
 export default SetPassword;

@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  ScrollView,
   View,
   Modal,
   StyleSheet,
@@ -19,13 +18,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CartList from '../../components/CartList';
 import { useSelector } from 'react-redux';
 
+const {width} = Dimensions.get("screen");
 
-
-const {width} = Dimensions.get("screen")
-
-const Cart =(props) =>{
+const Cart = (props) => {
   const value = {values:true};
-  const token = useSelector(state => state.token)
+  const token = useSelector(state => state.token);
   const [data,setdata] = useState([]);
   const [cartDetails,setCartDetails] = useState("");
   const [loading,setLoading] =useState(false);
@@ -33,27 +30,28 @@ const Cart =(props) =>{
   const [total,setTotal] = useState(0);
   const [subtotal,setsubTotal] = useState(0);
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true)
     GetCart()
     
-   },[total])
+  },[total])
   
-   const sendDataToParent =(total,subtotal) =>{
-     setTotal(total);
-     setsubTotal(subtotal);
-   }
-   const sendDataToParent1 =(total,subtotal,data) =>{
+  const sendDataToParent = (total,subtotal) => {
+    setTotal(total);
+    setsubTotal(subtotal);
+  }
+
+  const sendDataToParent1 = (total,subtotal,data) => {
     setTotal(total);
     setsubTotal(subtotal);
     setdata(data)
   }
-   const proceedToBuy = async() =>{
+
+  const proceedToBuy = async() => {
     await axios.get(`${BASE_URL}/proceedToBuy`,{
       headers: {
         'accept': '*/*' ,
-        'Authorization':`Bearer ${token}`
-          
+        'Authorization':`Bearer ${token}`   
       },
     })
     .then(response => {
@@ -62,7 +60,7 @@ const Cart =(props) =>{
         console.log("cart",response.data)
         setLoading(false)
         props.navigation.navigate('ShippingAddress',value)
-        ToastAndroid.showWithGravityAndOffset("Please select delivery address by click on the address", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        // ToastAndroid.showWithGravityAndOffset("Please select delivery address by click on the address", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
       }
     })
     .catch(function (error) {
@@ -70,18 +68,12 @@ const Cart =(props) =>{
       console.log(error);
       ToastAndroid.showWithGravityAndOffset("There might be network error,Please try again", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
     });
+  }
 
-
-
-   }
-
-   const GetCart = async()=> {
-
+  const GetCart = async() => {
     await axios.get(`${BASE_URL}/getCart`,{
       headers: {
-          
         'Authorization':`Bearer ${token}`
-          
       },
     })
     .then(response => {
@@ -100,9 +92,9 @@ const Cart =(props) =>{
     setLoading(false)
       console.log(error);
       alert('There might me an network error');
-    });
-      
+    });   
   }
+
   return(
     <View style={styles.cartContainer}>
       <HeaderScreen header="Cart" onPress={() => props.navigation.goBack()}/>
@@ -110,30 +102,15 @@ const Cart =(props) =>{
         <View style={styles.emptyCartView}>
           <Image style={styles.emptyCartImg} resizeMode="contain" source={require('../../assets/images/emptyCart.png')}/>
           <Text style={styles.emptyCartText}>Cart is empty!!!</Text>
-        </View>:
-      <View style={{flex:1, paddingHorizontal:10,marginTop:10}}>
-        <FlatList 
-          data={data}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item) => item._id}
-          renderItem={({item,index}) =>{
-            
-            
-            console.log("index",index,
-              "_id",cartDetails._id,
-              "data",cartDetails,
-              "product_Id",item._id,
-              "productI",item.productId,
-              "productName",item.productName,
-              "orderQuantity",item.orderQuantity,
-              "total",item.total,
-              "productImage",item.productImage,
-              "productColor",item.productColor,
-              "productSeller",item.productSeller,
-            "  productStock",item.productStock,
-            "  productPrice",item.productPrice,
-             )
-            return (
+        </View>
+        :
+        <View style={styles.cartItemsView}>
+          <FlatList 
+            data={data}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item) => item._id}
+            renderItem={({item,index}) =>{
+              return (
                 <CartList
                   index={index}
                   _id={cartDetails._id}
@@ -151,58 +128,60 @@ const Cart =(props) =>{
                   sendDataToParent={sendDataToParent}
                   sendDataToParent1={sendDataToParent1}
                 />
-            )
-          }}
-        />
-      </View>}
-      {data.length === 0?<View/>:
-      <View style={styles.bottomView}>
-        <View >
-          <TouchableOpacity onPress={() => setShowModal(true)} style={styles.priceView}>
-          <Text style={{color:"maroon",fontSize:16,fontWeight:"bold"}}>₹ {total}</Text>
-          </TouchableOpacity>
+              )
+            }}
+          />
         </View>
-        <View >
-          <TouchableOpacity style={styles.orderView} onPress={() => proceedToBuy()}>
-            <Text style={{color:"#fff",fontSize:16,fontWeight:"bold"}}>Proceed To Buy</Text>
-          </TouchableOpacity>
+      }
+      {data.length === 0?
+        <View/>
+        :
+        <View style={styles.bottomView}>
+          <View>
+            <TouchableOpacity onPress={() => setShowModal(true)} style={styles.priceView}>
+              <Text style={styles.bottomViewText1}>₹ {total}</Text>
+            </TouchableOpacity>
+          </View>
+          <View >
+            <TouchableOpacity style={styles.orderView} onPress={() => proceedToBuy()}>
+              <Text style={styles.bottomViewText2}>Proceed To Buy</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        </View>}
+      }
       <Modal
         transparent={true}
         animationType="slide"
         visible={showModal}
-        onRequestClose={() => { setShowModal(false) }}
-      >
+        onRequestClose={() => { setShowModal(false) }}>
         <View style={styles.modalView}>
           <View style={styles.innermodalView}>
             <Icon name="close-circle" color="black" size={25} style={styles.iconClose} onPress={() => setShowModal(false)}/>
             <View style={styles.price}>
-            <Text style={styles.priceText}>SubTotal Price:</Text>
-            <Text style={styles.priceText}>{subtotal}</Text>
+              <Text style={styles.priceText}>SubTotal Price:</Text>
+              <Text style={styles.priceText}>{subtotal}</Text>
             </View>
-            <View style={[{paddingBottom:15,paddingTop:5,borderBottomWidth:1},styles.price]}>
-            <Text style={styles.priceText}>Taxes:</Text>
-            <Text style={styles.priceText}>{total - subtotal }</Text>
+            <View style={[styles.price1,styles.price]}>
+              <Text style={styles.priceText}>Taxes:</Text>
+              <Text style={styles.priceText}>{total - subtotal }</Text>
             </View>
-            <View style={[{paddingBottom:25,paddingTop:5},styles.price]}>
-            <Text style={styles.priceText}>Total Price:</Text>
-            <Text style={styles.priceText}>{total}</Text>
+            <View style={[styles.price2,styles.price]}>
+              <Text style={styles.priceText}>Total Price:</Text>
+              <Text style={styles.priceText}>{total}</Text>
             </View>
           </View>
         </View>
       </Modal>
-      <Loading loading={loading}  /> 
+      <Loading loading={loading}/> 
     </View>
-    );
+  );
 };
 
 
 const styles=StyleSheet.create({
   cartContainer:{
     backgroundColor:"#f0f0f0",
-    flex:1,
-   
+    flex:1, 
   },
   emptyCartView:{
     flex:1,
@@ -217,6 +196,11 @@ const styles=StyleSheet.create({
     color:"maroon",
     fontSize:40,
     fontWeight:"bold"
+  },
+  cartItemsView: {
+    flex:1, 
+    paddingHorizontal:10,
+    marginTop:10
   },
   bottomView:{
     flexDirection:"row",
@@ -245,10 +229,10 @@ const styles=StyleSheet.create({
     borderRadius:10,
   },
   modalView:{
-      ...StyleSheet.absoluteFill,
-      backgroundColor: 'rgba(0, 0, 0, .6)',
-      alignItems: 'center',
-      justifyContent: 'center',
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0, 0, 0, .6)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   innermodalView:{
     backgroundColor: "#fff",
@@ -262,14 +246,29 @@ const styles=StyleSheet.create({
     justifyContent:"space-between",
     paddingHorizontal:10
   },
+  price1: {
+    paddingBottom:15,
+    paddingTop:5,
+    borderBottomWidth:1
+  },
+  price2: {
+    paddingBottom:25,
+    paddingTop:5
+  },
   priceText:{
     color:'black',
     fontSize:20
+  },
+  bottomViewText1: {
+    color:"maroon",
+    fontSize:16,
+    fontWeight:"bold"
+  },
+  bottomViewText2: {
+    color:"#fff",
+    fontSize:16,
+    fontWeight:"bold"
   }
- 
 });
-
-
-
 
 export default Cart;

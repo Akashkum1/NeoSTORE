@@ -1,11 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, ActivityIndicator, Text} from 'react-native';
+import {
+  View, 
+  StyleSheet, 
+  ActivityIndicator, 
+  Text
+} from 'react-native';
 
-export function Loading({loading}) {
+
+export function Loading({ loading }) {
   if (!loading) {
-    return <View />;
+    return <View />
   }
-
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>

@@ -1,23 +1,31 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Text, KeyboardAvoidingView, Modal, PermissionsAndroid, ScrollView, TouchableOpacity, ToastAndroid, Image} from 'react-native';
-import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from 'react';
+import { 
+    View, 
+    StyleSheet, 
+    Text, 
+    KeyboardAvoidingView, 
+    Modal, 
+    PermissionsAndroid, 
+    ScrollView, 
+    TouchableOpacity, 
+    ToastAndroid, 
+    Image
+} from 'react-native';
+import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import ButtonField from '../../components/Button';
 import InputTextField from '../../components/TextField';
-import {NameValidator, PhoneNumberValidator } from '../../components/validation';
+import { NameValidator, PhoneNumberValidator } from '../../components/validation';
 import axios from 'axios';
 import { Loading } from '../../components/Loder';
 import { BASE_URL } from '../../config';
 import HeaderScreen from '../../components/Header';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { useSelector } from 'react-redux';
 
 
-
-
-
-const EditProfile = (props) =>{
+const EditProfile = (props) => {
     console.log(props.route.params['gender'])
-    const token =useSelector(state => state.token)
+    const token =useSelector(state => state.token);
     const [firstName, setFirstName] = useState(props.route.params['firstName']);
     const [firstNameErr, setFirstNameErr] = useState(null);
     const [lastName, setLastName] = useState(props.route.params['secondName']);
@@ -26,11 +34,11 @@ const EditProfile = (props) =>{
     const [phoneNumberErr, setPhoneNumberErr] = useState(null);
     const [checkedGender, setCheckedGender] = useState(null);
     const [genderValue, setGenderValue] = useState(null)
-    var gender = ['Male', 'Female'];
     const [loading, setLoading] = useState(false);
     const [profilePicData, setProfilePicData] = useState(`https://nameless-savannah-21991.herokuapp.com/images/user/${props.route.params['profilePic']}`);
     const [showmodal,setShowmodal] = useState(false);
-    console.log(`https://nameless-savannah-21991.herokuapp.com/images/user/${props.route.params['profilePic']}`)
+    var gender = ['Male', 'Female'];
+
     const setGender= (key) => {
         if(key ===0){
             setGenderValue("Male")
@@ -38,14 +46,14 @@ const EditProfile = (props) =>{
         else{
             setGenderValue("Female")
         }
-
     }
-    const Editprofile = () =>{
+
+    const Editprofile = () => {
         if(firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 ){
             // alert("Please enter the detail in Text Field!!")
             ToastAndroid.showWithGravityAndOffset("Please enter the detail in Text Field!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         }
-         else if(firstNameErr != null || lastNameErr != null ||  phoneNumberErr != null){
+        else if(firstNameErr != null || lastNameErr != null ||  phoneNumberErr != null){
             // alert("Please enter the details correctly")
             ToastAndroid.showWithGravityAndOffset("Please enter the details correctly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         } 
@@ -60,7 +68,7 @@ const EditProfile = (props) =>{
     }
 
 
-    const Edit = async() =>{
+    const Edit = async() => {
         const data={
             "profileDetails": {
               "firstName": firstName,
@@ -76,148 +84,153 @@ const EditProfile = (props) =>{
             headers: {
               "Content-Type": "application/json",
               'Authorization':`Bearer ${token} `
-
             },
             data,
         };
         await axios(config)
-            .then(response => {
-                if (response.status==200){
-                    setLoading(false);
-                    // alert("You have successfully updated your address!!")
-                    ToastAndroid.showWithGravityAndOffset(response.data.message, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                    console.log(response.data)
-                    props.navigation.goBack(); 
-                } 
-            })
-            .catch(function(error) {
+        .then(response => {
+            if (response.status==200){
                 setLoading(false);
-                console.log(error.message);
-                ToastAndroid.showWithGravityAndOffset("Please check the credentials as your phone number is same as someone else phone number OR There might be some network issue", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-            })
-            
-        
+                // alert("You have successfully updated your address!!")
+                ToastAndroid.showWithGravityAndOffset(response.data.message, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                console.log(response.data)
+                props.navigation.goBack(); 
+            } 
+        })
+        .catch(function(error) {
+            setLoading(false);
+            console.log(error.message);
+            ToastAndroid.showWithGravityAndOffset("Please check the credentials as your phone number is same as someone else phone number OR There might be some network issue", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        })   
     }
+
     const requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
-          try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.CAMERA,
-              {
-                title: 'Camera Permission',
-                message: 'App needs camera permission',
-              },
-            );
-            // If CAMERA Permission is granted
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-          } catch (err) {
-            console.warn(err);
-            return false;
-          }
-        } else return true;
-      };
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.CAMERA,
+                    {
+                        title: 'Camera Permission',
+                        message: 'App needs camera permission',
+                    },
+                );
+                // If CAMERA Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } 
+            catch (err) {
+                console.warn(err);
+                return false;
+            }
+        }
+        else return true;
+    };
     
-      const requestExternalWritePermission = async () => {
+    const requestExternalWritePermission = async () => {
         if (Platform.OS === 'android') {
-          try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-              {
-                title: 'External Storage Write Permission',
-                message: 'App needs write permission',
-              },
-            );
-            // If WRITE_EXTERNAL_STORAGE Permission is granted
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
-          } catch (err) {
-            console.warn(err);
-            alert('Write permission err', err);
-          }
-          return false;
-        } else return true;
-      };
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                    {
+                        title: 'External Storage Write Permission',
+                        message: 'App needs write permission',
+                    },
+                );
+                // If WRITE_EXTERNAL_STORAGE Permission is granted
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            } 
+            catch (err) {
+                console.warn(err);
+                alert('Write permission err', err);
+            }
+            return false;
+        } 
+        else return true;
+    };
     
-      const captureImage = async () => {
+    const captureImage = async () => {
         let options = {
-          mediaType: "photo",
-          cameraType:"front",
-          maxWidth: 300,
-          maxHeight: 550,
-          quality: 1,
-          saveToPhotos: true,
+            mediaType: "photo",
+            cameraType:"front",
+            maxWidth: 300,
+            maxHeight: 550,
+            quality: 1,
+            saveToPhotos: true,
         };
         let isCameraPermitted = await requestCameraPermission();
         let isStoragePermitted = await requestExternalWritePermission();
         if (isCameraPermitted && isStoragePermitted) {
-          launchCamera(options, (response) => {
-            console.log('Response = ', response);
-    
-            if (response.didCancel) {
-            //   alert('User cancelled camera picker');
-                ToastAndroid.showWithGravityAndOffset("User closed the camera", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                setShowmodal(false)
-                return;
-            } else if (response.errorCode == 'camera_unavailable') {
-            //   alert('Camera not available on device');
-                ToastAndroid.showWithGravityAndOffset("Camera not available on device", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                setShowmodal(false)
-              return;
-            } else if (response.errorCode == 'permission') {
-            //   alert('Permission not satisfied');
-                ToastAndroid.showWithGravityAndOffset("Permission not satisfied", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                setShowmodal(false)
-              return;
-            } else if (response.errorCode == 'others') {
-            //   alert(response.errorMessage);
-                ToastAndroid.showWithGravityAndOffset(response.errorMessage, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                setShowmodal(false)
-              return;
-            }
-            else{
-                console.log('uri -> ', response.assets[0].uri);
-                console.log('width -> ', response.assets[0].width);
-                console.log('height -> ', response.assets[0].height);
-                console.log('fileSize -> ', response.assets[0].fileSize);
-                console.log('type -> ', response.assets[0].type);
-                console.log('fileName -> ', response.assets[0].fileName);
-                setProfilePicData(response.assets[0].uri)
-                editprofilepicApiRequest(response.assets[0])
-            }
-            
-          });
+            launchCamera(options, (response) => {
+                console.log('Response = ', response);
+                if (response.didCancel) {
+                    //   alert('User cancelled camera picker');
+                    ToastAndroid.showWithGravityAndOffset("User closed the camera", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    setShowmodal(false)
+                    return;
+                }
+                else if (response.errorCode == 'camera_unavailable') {
+                    //   alert('Camera not available on device');
+                    ToastAndroid.showWithGravityAndOffset("Camera not available on device", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    setShowmodal(false)
+                    return;
+                } 
+                else if (response.errorCode == 'permission') {
+                    //   alert('Permission not satisfied');
+                    ToastAndroid.showWithGravityAndOffset("Permission not satisfied", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    setShowmodal(false)
+                    return;
+                } 
+                else if (response.errorCode == 'others') {
+                    //   alert(response.errorMessage);
+                    ToastAndroid.showWithGravityAndOffset(response.errorMessage, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                    setShowmodal(false)
+                    return;
+                }
+                else{
+                    console.log('uri -> ', response.assets[0].uri);
+                    console.log('width -> ', response.assets[0].width);
+                    console.log('height -> ', response.assets[0].height);
+                    console.log('fileSize -> ', response.assets[0].fileSize);
+                    console.log('type -> ', response.assets[0].type);
+                    console.log('fileName -> ', response.assets[0].fileName);
+                    setProfilePicData(response.assets[0].uri)
+                    editprofilepicApiRequest(response.assets[0])
+                }
+            });
         }
-      };
+    };
 
-    const openGallery = () =>{
+    const openGallery = () => {
         let options = {
             mediaType: "photo",
             maxWidth: 180,
             maxHeight: 130,
             quality: 1,
-          };
-          launchImageLibrary(options, (response) => {
+        };
+        launchImageLibrary(options, (response) => {
             console.log('Response = ', response);
-      
             if (response.didCancel) {
-            //   alert('User cancelled camera picker');
+                //   alert('User cancelled camera picker');
                 ToastAndroid.showWithGravityAndOffset("User closed the image gallery", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
                 setShowmodal(false)
-              return;
-            } else if (response.errorCode == 'camera_unavailable') {
-            //   alert('Camera not available on device');
+                return;
+            }
+            else if (response.errorCode == 'camera_unavailable') {
+                //   alert('Camera not available on device');
                 ToastAndroid.showWithGravityAndOffset("Camera not available on device", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
                 setShowmodal(false)
-              return;
-            } else if (response.errorCode == 'permission') {
-            //   alert('Permission not satisfied');
+                return;
+            }
+            else if (response.errorCode == 'permission') {
+                //   alert('Permission not satisfied');
                 ToastAndroid.showWithGravityAndOffset("Permission not satisfied", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
                 setShowmodal(false)
-              return;
-            } else if (response.errorCode == 'others') {
-            //   alert(response.errorMessage);
+                return;
+            } 
+            else if (response.errorCode == 'others') {
+                //   alert(response.errorMessage);
                 ToastAndroid.showWithGravityAndOffset(response.errorMessage, ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
                 setShowmodal(false)
-              return;
+                return;
             }
             else{
                 console.log('uri -> ', response.assets[0].uri);
@@ -229,10 +242,10 @@ const EditProfile = (props) =>{
                 setProfilePicData(response.assets[0].uri)
                 editprofilepicApiRequest(response.assets[0])
             }
-          }); 
-     }
+        }); 
+    }
 
-    const editprofilepicApiRequest = async(image) =>{
+    const editprofilepicApiRequest = async(image) => {
         var data = new FormData();
         let headers = {
             'accept': '*/*',
@@ -246,7 +259,7 @@ const EditProfile = (props) =>{
         });
         console.log(" form data", data)
         await axios.post(
-            'https://nameless-savannah-21991.herokuapp.com/updateProfilePic',
+            `${BASE_URL}/updateProfilePic`,
             data,
             {headers}
         )
@@ -267,7 +280,7 @@ const EditProfile = (props) =>{
     }
     
     return(
-        <View style={{flex:1}}>
+        <View style={styles.container}>
             <HeaderScreen header="Edit Profile" onPress={() => props.navigation.goBack()}/>
             <KeyboardAvoidingView
                 style={styles.loginContainer}
@@ -377,14 +390,13 @@ const EditProfile = (props) =>{
                 </View>
             </Modal>
         </View>
-    )
-}
-
-
-
-
+    );
+};
 
 const styles= StyleSheet.create({
+    container:{
+        flex:1
+    },
     loginContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -457,19 +469,12 @@ const styles= StyleSheet.create({
         justifyContent:"center",
         paddingBottom:20
     },
-    checkbox:{
-        paddingRight:20
-    },
-    termText:{
-        fontSize:20,
-        color:"black"
-    },
     modalView:{
-            ...StyleSheet.absoluteFill,
-            backgroundColor: 'rgba(0, 0, 0, 0.01)',
-            marginTop:60,
-            justifyContent:"center",
-            alignItems:'center'
+        ...StyleSheet.absoluteFill,
+        backgroundColor: 'rgba(0, 0, 0, 0.01)',
+        marginTop:60,
+        justifyContent:"center",
+        alignItems:'center'
             
     },
     innerModal:{

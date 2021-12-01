@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, ScrollView, ToastAndroid } from 'react-native';
+import {
+    View, 
+    StyleSheet, 
+    KeyboardAvoidingView, 
+    ScrollView, 
+    ToastAndroid 
+} from 'react-native';
 import ButtonField from '../../components/Button';
 import InputTextField from '../../components/TextField';
 import { AddressValidator, CityValidator, PinCodeValidator, StateValidator, CountryValidator } from '../../components/validation';
@@ -10,8 +16,7 @@ import { Loading } from '../../components/Loder';
 import {  useSelector } from 'react-redux';
 
 const AddAddress =({navigation}) =>{
-
-    const token = useSelector(state => state.token)
+    const token = useSelector(state => state.token);
     const [address1, setAddress1] = useState('');
     const [address1Err, setAddress1Err] = useState(null);
     const [address2, setAddress2] = useState('');
@@ -26,67 +31,67 @@ const AddAddress =({navigation}) =>{
     const [countryErr, setCountryErr] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    
-    
-    
-    
-    const Addaddress = () =>{
+    const Addaddress = () => {
         if(address1.length === 0 || address2.length === 0 || city.length === 0 || state.length === 0 || country.length === 0){
-            alert("Please enter the detail in Text Field!!")
+            // alert("Please enter the detail in Text Field!!")
+            ToastAndroid.showWithGravityAndOffset("Please enter the detail in Text Field!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         }
-         else if(address1Err != null || address2Err != null || cityErr != null || stateErr != null || countryErr != null){
-            alert("Please enter the details correctly")
+        else if(address1Err != null || address2Err != null || cityErr != null || stateErr != null || countryErr != null){
+            // alert("Please enter the details correctly")
+            ToastAndroid.showWithGravityAndOffset("Please enter the details correctly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         } 
         else{
             AddAddressApiRequest()
         }
     }
-    const AddAddressApiRequest = async() =>{
+
+    const AddAddressApiRequest = async() => {
         const data={
             "address": {
-              "address": `${address1+" "+address2} `,
-              "pincode": pinCode,
-              "city": city,
-              "state": state,
-              "country": country
+                "address": `${address1+" "+address2} `,
+                "pincode": pinCode,
+                "city": city,
+                "state": state,
+                "country": country
             }
-          }
+        }
         var config = {
             method: "post",
             url: `${BASE_URL}/addCustAddress`,
             headers: {
               "Content-Type": "application/json",
               'Authorization':`Bearer ${token}`
-
             },
             data,
         };
         await axios(config)
-            .then(response => {
-                if (response.status==200){
-                    setLoading(false);
-                    navigation.goBack();
-                    // alert("You have successfully updated your address!!")
-                    ToastAndroid.showWithGravityAndOffset("You have successfully added your address!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                    console.log(response.data)  
-                } 
-            })
-            .catch(function(error) {
-                console.log(error);
+        .then(response => {
+            if (response.status==200){
                 setLoading(false);
-                // alert("There might be network issue or check the credentials")
-                ToastAndroid.showWithGravityAndOffset("There might be network issue or check the credentials", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-            })
+                navigation.goBack();
+                // alert("You have successfully updated your address!!")
+                ToastAndroid.showWithGravityAndOffset("You have successfully added your address!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+                console.log(response.data)  
+            } 
+        })
+        .catch(function(error) {
+            console.log(error);
+            setLoading(false);
+            // alert("There might be network issue or check the credentials")
+            ToastAndroid.showWithGravityAndOffset("There might be network issue or check the credentials", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        })
         
     }
+
     return(
-        <View style={{flex:1}}>
+        <View style={styles.address}>
             <HeaderScreen header="Add Address" onPress={() => {navigation.goBack()}}/>
             <KeyboardAvoidingView
                 style={styles.loginContainer}
                 behavior={Platform.OS == 'ios' ? 'padding' : null}
                 enabled
-                keyboardVerticalOffset={60}>
+                keyboardVerticalOffset={60}
+            >
                 <ScrollView contentContainerStyle={styles.scrollViewConatiner}>
                     <View>
                         <InputTextField  
@@ -166,33 +171,34 @@ const AddAddress =({navigation}) =>{
 
 
 const styles= StyleSheet.create({
+    address: {
+        flex:1
+    },
     loginContainer: {
         flex: 1,
         backgroundColor:"#f0f0f0",
         justifyContent: 'center',
         padding: 20,
-      },
-      scrollViewConatiner:{
+    },
+    scrollViewConatiner:{
         flexGrow: 1, 
         justifyContent: 'center'
-      },
-      subheadingText:{
+    },
+    subheadingText:{
         color:"maroon",
         alignSelf: 'center',
         fontSize: 40,
         marginBottom: 40,
         fontWeight: 'bold',
-      },
-      touchableTextButton:{
+    },
+    touchableTextButton:{
         alignItems:"center",
         marginTop:20
-      },
-      touchableText:{
+    },
+    touchableText:{
         color:"black",
         fontSize:18
-      },
+    },
 });
-
-  
-  
-  export default AddAddress;
+ 
+export default AddAddress;

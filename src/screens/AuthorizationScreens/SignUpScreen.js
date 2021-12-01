@@ -1,5 +1,13 @@
-import React, {useState} from 'react';
-import { View, StyleSheet, Text, KeyboardAvoidingView, ScrollView, TouchableOpacity, ToastAndroid} from 'react-native';
+import React, { useState } from 'react';
+import { 
+    View, 
+    StyleSheet, 
+    Text, 
+    KeyboardAvoidingView, 
+    ScrollView, 
+    TouchableOpacity, 
+    ToastAndroid
+} from 'react-native';
 import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import ButtonField from '../../components/Button';
 import InputTextField from '../../components/TextField';
@@ -9,10 +17,7 @@ import { Loading } from '../../components/Loder';
 import { BASE_URL } from '../../config';
 import HeaderScreen from '../../components/Header';
 
-
-
-
-const SignUp = ({navigation}) =>{
+const SignUp = ({navigation}) => {
     const [firstName, setFirstName] = useState('');
     const [firstNameErr, setFirstNameErr] = useState(null);
     const [lastName, setLastName] = useState('');
@@ -29,9 +34,9 @@ const SignUp = ({navigation}) =>{
     const [confirmPassSecure, setConfirmPassSecure] = useState(true);
     const [checkedGender, setCheckedGender] = useState(null);
     const [genderValue, setGenderValue] = useState(null)
-    var gender = ['Male', 'Female'];
     const [agree, setAgree] = useState(false);
     const [loading, setLoading] = useState(false);
+    var gender = ['Male', 'Female'];
 
     const setGender= (key) => {
         if(key ===0){
@@ -40,14 +45,14 @@ const SignUp = ({navigation}) =>{
         else{
             setGenderValue("Female")
         }
-
     }
-    const Registeration = () =>{
+
+    const Registeration = () => {
         if(firstName.length === 0 || lastName.length === 0 || email.length === 0 || phoneNumber.length === 0 || password.length === 0 || confirmPassword.length === 0){
             // alert("Please enter the detail in Text Field!!")
             ToastAndroid.showWithGravityAndOffset("Please enter the detail in Text Field!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         }
-         else if(firstNameErr != null || lastNameErr != null || emailErr != null || phoneNumberErr != null ||  passwordErr != null || confirmPasswordErr != null){
+        else if(firstNameErr != null || lastNameErr != null || emailErr != null || phoneNumberErr != null ||  passwordErr != null || confirmPasswordErr != null){
             // alert("Please enter the details correctly")
             ToastAndroid.showWithGravityAndOffset("Please enter the details correctly", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
         } 
@@ -79,27 +84,25 @@ const SignUp = ({navigation}) =>{
           'Content-Type': "multipart/form-data",
         };
         await axios.post(`${BASE_URL}/register`, data, {"headers": {headers},})
-            .then(response => {
-                if (response.status==200){
-                  setLoading(false);
+        .then(response => {
+            if (response.status==200){
+                setLoading(false);
                 //   alert("You have Successfully Registered!!")
                 ToastAndroid.showWithGravityAndOffset("You have Successfully Registered!!", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-                  console.log(response.data)
-                  navigation.navigate("Login")  
-                } 
-            })
-            .catch(function(error) {
-                setLoading(false);
-                console.log(error);
-                // alert("You have already registed or there might be network issue")
-                ToastAndroid.showWithGravityAndOffset("You have already registed or there might be network issue", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
-            }
-            
-        );
+                console.log(response.data)
+                navigation.navigate("Login")  
+            } 
+        })
+        .catch(function(error) {
+            setLoading(false);
+            console.log(error);
+            // alert("You have already registed or there might be network issue")
+            ToastAndroid.showWithGravityAndOffset("You have already registed or there might be network issue", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+        });
     }
     
     return(
-        <View style={{flex:1}}>
+        <View style={styles.container}>
             <HeaderScreen header="Sign Up" onPress={() => navigation.goBack()}/>
             <KeyboardAvoidingView
                 style={styles.loginContainer}
@@ -242,14 +245,17 @@ const SignUp = ({navigation}) =>{
                 <Loading loading={loading}/>
             </KeyboardAvoidingView>
         </View>
-    )
-}
+    );
+};
 
 
 
 
 
 const styles= StyleSheet.create({
+    container: {
+        flex:1
+    },
     loginContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -267,14 +273,14 @@ const styles= StyleSheet.create({
         fontSize: 50,
         marginBottom: 10,
         fontWeight: 'bold',
-      },
-      subheadingText:{
+    },
+    subheadingText:{
         color:"black",
         alignSelf: 'center',
         fontSize: 28,
         marginBottom: 30,
         fontWeight: '600',
-      },
+    },
     touchableTextButton:{
         alignItems:"center",
         marginTop:20

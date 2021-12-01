@@ -9,7 +9,8 @@ const RootStack = createNativeStackNavigator();
 
 
 const StackNavigator = () =>{
-    const loggedIn = useSelector((state) => state.loggedIn)
+    const loggedIn = useSelector((state) => state.loggedIn);
+    
     return(
         <NavigationContainer>
             <RootStack.Navigator>

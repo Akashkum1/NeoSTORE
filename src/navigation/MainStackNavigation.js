@@ -20,7 +20,6 @@ import OrderDetails from '../screens/OrderHistory/OrderDetails';
 
 const MainStack = createNativeStackNavigator();
 
-
 const MainStackNavigator = () =>{
     return(
         <MainStack.Navigator >
@@ -43,6 +42,6 @@ const MainStackNavigator = () =>{
             <MainStack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false }} />
         </MainStack.Navigator>
     );
-}
+};
 
 export default MainStackNavigator;

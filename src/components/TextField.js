@@ -1,13 +1,19 @@
-import React from "react";
-import { View, StyleSheet, TextInput, TouchableOpacity, Text } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import React from 'react';
+import { 
+  View, 
+  StyleSheet, 
+  TextInput, 
+  TouchableOpacity, 
+  Text 
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const InputTextField = (props) => {
     return (
       <View style={styles.inputOuterField}>
         <View style={styles.inputFieldContainer}>
           <View style={styles.leftInputfield}>
-            {props.iconName? <Icon name={props.iconName} size={20} color="black" style={{paddingRight:10}}/> : null}
+            {props.iconName? <Icon name={props.iconName} size={20} color="black" style={styles.icon}/> : null}
             <TextInput 
               placeholder={props.placeholder}
               placeholderTextColor="black"
@@ -53,6 +59,9 @@ const styles= StyleSheet.create({
     paddingLeft:15,
     alignItems:"center",
     justifyContent:"space-between"
+  },
+  icon: {
+    paddingRight:10
   },
   leftInputfield:{
     flexDirection:"row",

@@ -1,5 +1,5 @@
 import PushNotification from 'react-native-push-notification';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 
 
 class NotificationManager {
@@ -10,17 +10,12 @@ class NotificationManager {
       },
       onNotification: function (notification) {
         console.log('[NotificationManager] onNotification:', notification);
-
-        // process the notification
-
-        // (required) Called when a remote is received or opened, or local notification is opened
-        // notification.finish(PushNotificationIOS.FetchResult.NoData);
       },
       popInitialNotification: true,
       requestPermissions: Platform.OS==='ios',
     });
   };
-  
+
   _buildAndroidNotification = (id, title, message, data = {}, options = {}) => {
     PushNotification.createChannel(
       {
@@ -33,6 +28,7 @@ class NotificationManager {
       },
       (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
     );
+    
     return {
       id: id,
       channelId:'12345678',
@@ -48,6 +44,7 @@ class NotificationManager {
       data: data,
     };
   };
+
   showNotification = (id, title, message, data = {}, options = {}) => {
     PushNotification.localNotification({
       ...this._buildAndroidNotification(id, title, message, data, options),
@@ -58,9 +55,11 @@ class NotificationManager {
       userInteraction: false,
     });
   };
+
   cacncelAllNotifications = () => {
       PushNotification.cancelAllLocalNotifications();
   };
+
   unregister = () => {
     PushNotification.unregister();
   };

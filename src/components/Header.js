@@ -1,26 +1,32 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    TouchableOpacity 
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const HeaderScreen= (props) =>{
+const HeaderScreen= (props) => {
     return(
         <View style={styles.headerView}>
-            <View style={{flex:0.3}}>
+            <View style={{flex:0.25}}>
                 <TouchableOpacity onPress={props.onPress}>
                     <Icon 
                         name="arrow-left-bold-circle-outline"
-                    style={styles.headerIcon} 
+                        style={styles.headerIcon} 
                         size={40} 
                         color="maroon" 
                     />
                 </TouchableOpacity>
             </View>
-            <View style={{flex:0.7}}>
+            <View style={{flex:0.75}}>
                 <Text style={styles.headerText}>{props.header}</Text>
             </View>
         </View>
     )
 }
+
 const styles= StyleSheet.create({
     headerView:{
         backgroundColor:"#fff",

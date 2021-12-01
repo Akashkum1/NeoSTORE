@@ -7,8 +7,7 @@ import SetPassword from '../screens/AuthorizationScreens/SetPasswordScreen';
 
 const AuthStack = createNativeStackNavigator();
 
-
-const AuthStackNavigator = () =>{
+const AuthStackNavigator = () => {
     return(
         <AuthStack.Navigator >
             <AuthStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
